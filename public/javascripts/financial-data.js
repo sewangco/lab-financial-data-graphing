@@ -1,5 +1,5 @@
 const apiUrl =
-  "http://api.coindesk.com/v1/bpi/historical/close.json?start='2020-08-10'&end=2020-09-09";
+  "http://api.coindesk.com/v1/bpi/historical/close.json?start=2020-08-10&end=2020-09-01";
 
 const printTheChart = (stockData) => {
   //first get the daily data
@@ -33,12 +33,28 @@ const printTheChart = (stockData) => {
   });
 };
 
-axios
-  .get(apiUrl)
-  .then((response) => {
-    printTheChart(response.data);
-    console.log(response.data);
-  })
-  .catch((error) => {
-    console.log(`Error while getting the data`, error);
-  });
+//add event listener
+
+document.getElementById("start").addEventListener("change", getDataFromApi);
+document.getElementById("end").addEventListener("change", getDataFromApi);
+
+function getDataFromApi() {
+  let inputFrom = document.getElementById("start").value;
+  let inputTo = document.getElementById("end").value;
+
+  let url =
+    inputFrom && inputTo
+      ? `http://api.coindesk.com/v1/bpi/historical/close.json?start=${inputFrom}&end=${inputTo}`
+      : "http://api.coindesk.com/v1/bpi/historical/close.json";
+  axios
+    .get(url)
+    .then((response) => {
+      printTheChart(response.data);
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.log(`Error while getting the data`, error);
+    });
+}
+
+getDataFromApi();
